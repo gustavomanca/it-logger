@@ -1,4 +1,12 @@
-import { GET_LOGS, SET_LOADING, LOGS_ERROR, ADD_LOG } from "./types";
+import {
+  GET_LOGS,
+  UPDATE_LOG,
+  DELETE_LOG,
+  SET_LOADING,
+  LOGS_ERROR,
+  ADD_LOG,
+  CLEAR_CURRENT,
+} from "./types";
 
 export const getLogs = () => async (dispatch) => {
   try {
@@ -40,6 +48,55 @@ export const addLog = (log) => async (dispatch) => {
     dispatch({
       type: LOGS_ERROR,
       paylaod: error.response.data,
+    });
+  }
+};
+
+export const updateLog = (log) => async (dispatch) => {
+  try {
+    setLoading();
+
+    await fetch(`/logs/${log.id}`, {
+      method: "PUT",
+      body: JSON.stringify(log),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    dispatch({
+      type: UPDATE_LOG,
+      payload: log,
+    });
+
+    dispatch({
+      type: CLEAR_CURRENT,
+    });
+  } catch (error) {
+    debugger;
+    dispatch({
+      type: LOGS_ERROR,
+      paylaod: error.response.data,
+    });
+  }
+};
+
+export const deleteLog = (id) => async (dispatch) => {
+  try {
+    setLoading();
+
+    await fetch(`/logs/${id}`, {
+      method: "DELETE",
+    });
+
+    dispatch({
+      type: DELETE_LOG,
+      payload: id,
+    });
+  } catch (error) {
+    dispatch({
+      type: LOGS_ERROR,
+      payload: error.response.data,
     });
   }
 };

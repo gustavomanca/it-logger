@@ -1,20 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { connect, useSelector } from "react-redux";
 import M from "materialize-css/dist/js/materialize.min.js";
+import { updateLog } from "../../actions/logActions";
 
-const EditLogModal = () => {
+const EditLogModal = ({ updateLog }) => {
+  const currentLog = useSelector((state) => state.log.current);
+  const inputTitle = useRef(null);
   const [message, setMessage] = useState("");
   const [attention, setAttention] = useState(false);
   const [tech, setTech] = useState("");
+
+  useEffect(() => {
+    if (currentLog) setLog();
+
+    //eslint-disable-nextline
+  }, [currentLog]);
+
+  const setLog = () => {
+    const { message, attention, tech } = currentLog;
+
+    setMessage(message);
+    setAttention(attention);
+    setTech(tech);
+    inputTitle.current.focus();
+  };
 
   const onSubmit = (e) => {
     if (!message || !tech) {
       M.toast({ html: "Please enter a message and tech" });
     } else {
-      console.table(message, tech, attention);
+      const updatedLog = {
+        id: currentLog.id,
+        message,
+        tech,
+        attention,
+      };
 
-      setMessage("");
-      setTech("");
-      setAttention(false);
+      updateLog(updatedLog);
     }
   };
 
@@ -28,6 +50,7 @@ const EditLogModal = () => {
               type="text"
               name="message"
               value={message}
+              ref={inputTitle}
               onChange={({ target }) => setMessage(target.value)}
             />
             <label htmlFor="message" className="active">
@@ -55,13 +78,13 @@ const EditLogModal = () => {
         <div className="row">
           <div className="input-field">
             <p>
-              <label htmlFor="">
+              <label>
                 <input
                   type="checkbox"
                   className="filled-in"
                   checked={attention}
                   value={attention}
-                  onChange={() => setAttention(!attention)}
+                  onChange={(e) => setAttention(!attention)}
                 />
                 <span>Needs Attention</span>
               </label>
@@ -87,4 +110,4 @@ const modalStyle = {
   width: "75%",
 };
 
-export default EditLogModal;
+export default connect(null, { updateLog })(EditLogModal);

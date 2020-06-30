@@ -1,8 +1,13 @@
 import React from "react";
 import Moment from "react-moment";
+import { connect, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
+import { deleteLog } from "../../actions/logActions";
+import { SET_CURRENT } from "../../actions/types";
 
-const LogItem = ({ log }) => {
+const LogItem = ({ log, deleteLog }) => {
+  const dispatch = useDispatch();
+
   return (
     <li className="collection-item">
       <div>
@@ -11,6 +16,7 @@ const LogItem = ({ log }) => {
           className={`modal-trigger ${
             log.attention ? "red-text" : "blue-text"
           }`}
+          onClick={() => dispatch({ type: SET_CURRENT, payload: log })}
         >
           {log.message}
         </a>
@@ -20,7 +26,11 @@ const LogItem = ({ log }) => {
           <span className="black-text">{log.tech}</span> on{" "}
           <Moment format="MMMM Do YYYY, h:mm:ss a">{log.date}</Moment>
         </span>
-        <a href="#!" className="secondary-content">
+        <a
+          href="#!"
+          className="secondary-content"
+          onClick={(e) => deleteLog(log.id)}
+        >
           <i className="material-icons grey-text">delete</i>
         </a>
       </div>
@@ -32,4 +42,4 @@ LogItem.propTypes = {
   log: PropTypes.object.isRequired,
 };
 
-export default LogItem;
+export default connect(null, { deleteLog })(LogItem);
