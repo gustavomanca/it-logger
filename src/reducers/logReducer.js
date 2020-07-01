@@ -7,6 +7,7 @@ import {
   ADD_LOG,
   DELETE_LOG,
   UPDATE_LOG,
+  SEARCH_LOGS,
 } from "../actions/types";
 
 const initialState = {
@@ -25,6 +26,15 @@ export default (state = initialState, action) => {
         loading: false,
       };
 
+    case SEARCH_LOGS:
+      return {
+        ...state,
+        logs: state.logs.filter((log) => {
+          const regex = new RegExp(`${action.payload}`, "gi");
+
+          return log.message.match(regex);
+        }),
+      };
     case ADD_LOG:
       return {
         ...state,

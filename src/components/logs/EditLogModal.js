@@ -12,9 +12,7 @@ const EditLogModal = ({ updateLog }) => {
 
   useEffect(() => {
     if (currentLog) setLog();
-
-    //eslint-disable-nextline
-  }, [currentLog]);
+  }, [currentLog]); //eslint-disable-line
 
   const setLog = () => {
     const { message, attention, tech } = currentLog;
@@ -37,6 +35,8 @@ const EditLogModal = ({ updateLog }) => {
       };
 
       updateLog(updatedLog);
+
+      M.toast({ html: `Log updated by ${updatedLog.tech}!` });
     }
   };
 
