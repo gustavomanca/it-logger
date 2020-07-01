@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { addLog } from "../../actions/logActions";
 import M from "materialize-css/dist/js/materialize.min.js";
 
 const AddLogModal = ({ addLog }) => {
+  const techs = useSelector((state) => state.tech.techs);
   const [message, setMessage] = useState("");
   const [attention, setAttention] = useState(false);
   const [tech, setTech] = useState("");
@@ -56,11 +57,16 @@ const AddLogModal = ({ addLog }) => {
               onChange={({ target }) => setTech(target.value)}
             >
               <option value="" disabled>
-                Select Technician
+                {techs.length ? "Select Technician" : "No technicians found"}
               </option>
-              <option value="John Doe">John Doe</option>
-              <option value="Sam Smith">Sam Smith</option>
-              <option value="Sara Wilson">Sara Wilson</option>
+              {techs.map((tech) => {
+                const techName = `${tech.firstName} ${tech.lastName}`;
+                return (
+                  <option value={techName} key={tech.id}>
+                    {techName}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </div>
